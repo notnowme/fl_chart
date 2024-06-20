@@ -153,7 +153,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
         ..drawCircle(centerOffset, radius, _borderPaint);
     } else {
       final path =
-          _generatePolygonPath(centerX, centerY, radius, data.titleCount);
+          _generateSmoothPolygonPath(centerX, centerY, radius, data.titleCount);
 
       /// draw radar background
       canvasWrapper
@@ -187,7 +187,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
           canvasWrapper.drawCircle(centerOffset, tickRadius, _tickPaint);
         } else {
           canvasWrapper.drawPath(
-            _generatePolygonPath(centerX, centerY, tickRadius, data.titleCount),
+            _generateSmoothPolygonPath(centerX, centerY, tickRadius, data.titleCount),
             _tickPaint,
           );
         }
@@ -462,6 +462,45 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
 
     return dataSetsPosition;
   }
+  Path _generateSmoothPolygonPath(
+  double centerX,
+  double centerY,
+  double radius,
+  int count,
+) {
+  final path = Path();
+  final angle = (2 * pi) / count;
+  final controlPointPercentage = 0.5; // 조절할 수 있는 제어점 비율
+
+  for (var index = 0; index < count; index++) {
+    final currentAngle = angle * index - pi / 2;
+    final nextAngle = angle * (index + 1) - pi / 2;
+
+    final currentX = centerX + radius * cos(currentAngle);
+    final currentY = centerY + radius * sin(currentAngle);
+    final nextX = centerX + radius * cos(nextAngle);
+    final nextY = centerY + radius * sin(nextAngle);
+
+    final controlPoint1X = currentX + radius * controlPointPercentage * cos(currentAngle);
+    final controlPoint1Y = currentY + radius * controlPointPercentage * sin(currentAngle);
+    final controlPoint2X = nextX - radius * controlPointPercentage * cos(nextAngle);
+    final controlPoint2Y = nextY - radius * controlPointPercentage * sin(nextAngle);
+
+    if (index == 0) {
+      path.moveTo(currentX, currentY);
+    }
+
+    path.cubicTo(
+      controlPoint1X, controlPoint1Y,
+      controlPoint2X, controlPoint2Y,
+      nextX, nextY,
+    );
+  }
+
+  path.close();
+  return path;
+}
+
 }
 
 class RadarDataSetsPosition {
