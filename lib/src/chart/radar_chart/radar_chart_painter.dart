@@ -249,7 +249,8 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
 
       _gridPaint
         ..color = data.gridBorderData.color
-        ..strokeWidth = data.gridBorderData.width;
+        ..strokeWidth = data.gridBorderData.width
+        ..strokeCap = StrokeCap.round;
       canvasWrapper.drawLine(centerOffset, gridOffset, _gridPaint);
     }
   }
@@ -341,7 +342,8 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
       _graphBorderPaint
         ..color = graph.borderColor
         ..style = PaintingStyle.stroke
-        ..strokeWidth = graph.borderWidth;
+        ..strokeWidth = graph.borderWidth
+        ..strokeCap = StrokeCap.round;
 
       _graphPointPaint
         ..color = _graphBorderPaint.color
