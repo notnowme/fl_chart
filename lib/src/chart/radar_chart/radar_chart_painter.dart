@@ -21,11 +21,11 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
       ..style = PaintingStyle.fill
       ..isAntiAlias = true;
 
-    _borderPaint = Paint()..style = PaintingStyle.stroke;
+    _borderPaint = Paint()..style = PaintingStyle.stroke..strokeCap = StrokeCap.round;
 
-    _gridPaint = Paint()..style = PaintingStyle.stroke;
+    _gridPaint = Paint()..style = PaintingStyle.stroke..strokeCap = StrokeCap.round;
 
-    _tickPaint = Paint()..style = PaintingStyle.stroke;
+    _tickPaint = Paint()..style = PaintingStyle.stroke..strokeCap = StrokeCap.round;
 
     _graphPaint = Paint();
     _graphBorderPaint = Paint();
