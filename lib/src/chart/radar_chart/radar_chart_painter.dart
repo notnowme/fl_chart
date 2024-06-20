@@ -21,11 +21,11 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
       ..style = PaintingStyle.fill
       ..isAntiAlias = true;
 
-    _borderPaint = Paint()..style = PaintingStyle.stroke..strokeCap = StrokeCap.round;
+    _borderPaint = Paint()..style = PaintingStyle.stroke;
 
-    _gridPaint = Paint()..style = PaintingStyle.stroke..strokeCap = StrokeCap.round;
+    _gridPaint = Paint()..style = PaintingStyle.stroke;
 
-    _tickPaint = Paint()..style = PaintingStyle.stroke..strokeCap = StrokeCap.round;
+    _tickPaint = Paint()..style = PaintingStyle.stroke;
 
     _graphPaint = Paint();
     _graphBorderPaint = Paint();
@@ -153,7 +153,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
         ..drawCircle(centerOffset, radius, _borderPaint);
     } else {
       final path =
-          _generateSmoothPolygonPath(centerX, centerY, radius, data.titleCount);
+          _generatePolygonPath(centerX, centerY, radius, data.titleCount);
 
       /// draw radar background
       canvasWrapper
@@ -187,7 +187,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
           canvasWrapper.drawCircle(centerOffset, tickRadius, _tickPaint);
         } else {
           canvasWrapper.drawPath(
-            _generateSmoothPolygonPath(centerX, centerY, tickRadius, data.titleCount),
+            _generatePolygonPath(centerX, centerY, tickRadius, data.titleCount),
             _tickPaint,
           );
         }
@@ -249,8 +249,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
 
       _gridPaint
         ..color = data.gridBorderData.color
-        ..strokeWidth = data.gridBorderData.width
-        ..strokeCap = StrokeCap.round;
+        ..strokeWidth = data.gridBorderData.width;
       canvasWrapper.drawLine(centerOffset, gridOffset, _gridPaint);
     }
   }
@@ -343,7 +342,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
         ..color = graph.borderColor
         ..style = PaintingStyle.stroke
         ..strokeWidth = graph.borderWidth
-        ..strokeCap = StrokeCap.round;
+        ..strokeCap = StrokeCap.round; // make border rounded
 
       _graphPointPaint
         ..color = _graphBorderPaint.color
@@ -366,7 +365,19 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
       dataSetOffset.entriesOffset.asMap().forEach((index, pointOffset) {
         if (index == 0) return;
 
-        path.lineTo(pointOffset.dx, pointOffset.dy);
+        // draw smooth curves
+        final previousOffset = dataSetOffset.entriesOffset[index - 1];
+        final controlPoint = Offset(
+          (previousOffset.dx + pointOffset.dx) / 2,
+          (previousOffset.dy + pointOffset.dy) / 2,
+        );
+
+        path.quadraticBezierTo(
+          controlPoint.dx,
+          controlPoint.dy,
+          pointOffset.dx,
+          pointOffset.dy,
+        );
 
         canvasWrapper.drawCircle(
           pointOffset,
@@ -374,6 +385,19 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
           _graphPointPaint,
         );
       });
+
+      // Close the path to complete the shape
+      final lastOffset = dataSetOffset.entriesOffset.last;
+      final firstControlPoint = Offset(
+        (firstOffset.dx + lastOffset.dx) / 2,
+        (firstOffset.dy + lastOffset.dy) / 2,
+      );
+      path.quadraticBezierTo(
+        firstControlPoint.dx,
+        firstControlPoint.dy,
+        firstOffset.dx,
+        firstOffset.dy,
+      );
 
       path.close();
       canvasWrapper
@@ -462,45 +486,6 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
 
     return dataSetsPosition;
   }
-  Path _generateSmoothPolygonPath(
-  double centerX,
-  double centerY,
-  double radius,
-  int count,
-) {
-  final path = Path();
-  final angle = (2 * pi) / count;
-  final controlPointPercentage = 0.5; // 조절할 수 있는 제어점 비율
-
-  for (var index = 0; index < count; index++) {
-    final currentAngle = angle * index - pi / 2;
-    final nextAngle = angle * (index + 1) - pi / 2;
-
-    final currentX = centerX + radius * cos(currentAngle);
-    final currentY = centerY + radius * sin(currentAngle);
-    final nextX = centerX + radius * cos(nextAngle);
-    final nextY = centerY + radius * sin(nextAngle);
-
-    final controlPoint1X = currentX + radius * controlPointPercentage * cos(currentAngle);
-    final controlPoint1Y = currentY + radius * controlPointPercentage * sin(currentAngle);
-    final controlPoint2X = nextX - radius * controlPointPercentage * cos(nextAngle);
-    final controlPoint2Y = nextY - radius * controlPointPercentage * sin(nextAngle);
-
-    if (index == 0) {
-      path.moveTo(currentX, currentY);
-    }
-
-    path.cubicTo(
-      controlPoint1X, controlPoint1Y,
-      controlPoint2X, controlPoint2Y,
-      nextX, nextY,
-    );
-  }
-
-  path.close();
-  return path;
-}
-
 }
 
 class RadarDataSetsPosition {
