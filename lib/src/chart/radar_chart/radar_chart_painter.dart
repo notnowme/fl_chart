@@ -5,7 +5,6 @@ import 'package:fl_chart/src/chart/base/base_chart/base_chart_painter.dart';
 import 'package:fl_chart/src/utils/canvas_wrapper.dart';
 import 'package:fl_chart/src/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:vector_math/vector_math.dart' as vector;
 
 /// Paints [RadarChartData] in the canvas, it can be used in a [CustomPainter]
 class RadarChartPainter extends BaseChartPainter<RadarChartData> {
@@ -365,13 +364,25 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
       );
 
       if (dataSetOffset.entriesOffset.length > 1) {
-        final spline = vector.CatmullRomSpline(
-          dataSetOffset.entriesOffset.map((offset) => vector.Vector2(offset.dx, offset.dy)).toList(),
-        );
-
-        for (double t = 0; t < dataSetOffset.entriesOffset.length - 1; t += 0.1) {
-          final point = spline.transform(t);
-          path.lineTo(point.x, point.y);
+        for (int i = 0; i < dataSetOffset.entriesOffset.length - 1; i++) {
+          final current = dataSetOffset.entriesOffset[i];
+          final next = dataSetOffset.entriesOffset[i + 1];
+          final controlPoint1 = Offset(
+            (current.dx + next.dx) / 2,
+            current.dy,
+          );
+          final controlPoint2 = Offset(
+            (current.dx + next.dx) / 2,
+            next.dy,
+          );
+          path.cubicTo(
+            controlPoint1.dx,
+            controlPoint1.dy,
+            controlPoint2.dx,
+            controlPoint2.dy,
+            next.dx,
+            next.dy,
+          );
         }
 
         // Close the path to complete the shape
