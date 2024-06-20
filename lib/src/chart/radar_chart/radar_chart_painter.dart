@@ -5,6 +5,7 @@ import 'package:fl_chart/src/chart/base/base_chart/base_chart_painter.dart';
 import 'package:fl_chart/src/utils/canvas_wrapper.dart';
 import 'package:fl_chart/src/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:vector_math/vector_math.dart' as vector;
 
 /// Paints [RadarChartData] in the canvas, it can be used in a [CustomPainter]
 class RadarChartPainter extends BaseChartPainter<RadarChartData> {
@@ -362,44 +363,23 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
         graph.entryRadius,
         _graphPointPaint,
       );
-      dataSetOffset.entriesOffset.asMap().forEach((index, pointOffset) {
-        if (index == 0) return;
 
-        // draw smooth curves
-        final previousOffset = dataSetOffset.entriesOffset[index - 1];
-        final controlPoint = Offset(
-          (previousOffset.dx + pointOffset.dx) / 2,
-          (previousOffset.dy + pointOffset.dy) / 2,
+      if (dataSetOffset.entriesOffset.length > 1) {
+        final spline = vector.CatmullRomSpline(
+          dataSetOffset.entriesOffset.map((offset) => vector.Vector2(offset.dx, offset.dy)).toList(),
         );
 
-        path.quadraticBezierTo(
-          controlPoint.dx,
-          controlPoint.dy,
-          pointOffset.dx,
-          pointOffset.dy,
-        );
+        for (double t = 0; t < dataSetOffset.entriesOffset.length - 1; t += 0.1) {
+          final point = spline.transform(t);
+          path.lineTo(point.x, point.y);
+        }
 
-        canvasWrapper.drawCircle(
-          pointOffset,
-          graph.entryRadius,
-          _graphPointPaint,
-        );
-      });
+        // Close the path to complete the shape
+        final lastOffset = dataSetOffset.entriesOffset.last;
+        path.lineTo(lastOffset.dx, lastOffset.dy);
+        path.close();
+      }
 
-      // Close the path to complete the shape
-      final lastOffset = dataSetOffset.entriesOffset.last;
-      final firstControlPoint = Offset(
-        (firstOffset.dx + lastOffset.dx) / 2,
-        (firstOffset.dy + lastOffset.dy) / 2,
-      );
-      path.quadraticBezierTo(
-        firstControlPoint.dx,
-        firstControlPoint.dy,
-        firstOffset.dx,
-        firstOffset.dy,
-      );
-
-      path.close();
       canvasWrapper
         ..drawPath(path, _graphPaint)
         ..drawPath(path, _graphBorderPaint);
