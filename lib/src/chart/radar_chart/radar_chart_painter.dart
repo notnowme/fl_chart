@@ -142,7 +142,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
     _borderPaint
       ..color = data.radarBorderData.color
       ..strokeWidth = data.radarBorderData.width
-      ..storkeCap = StrokeCap.round;
+      ..strokeCap = StrokeCap.round;
 
     if (data.radarShape == RadarShape.circle) {
       /// draw radar background
