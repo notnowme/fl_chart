@@ -367,19 +367,13 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
         for (int i = 0; i < dataSetOffset.entriesOffset.length - 1; i++) {
           final current = dataSetOffset.entriesOffset[i];
           final next = dataSetOffset.entriesOffset[i + 1];
-          final controlPoint1 = Offset(
+          final controlPoint = Offset(
             (current.dx + next.dx) / 2,
-            current.dy,
+            (current.dy + next.dy) / 2,
           );
-          final controlPoint2 = Offset(
-            (current.dx + next.dx) / 2,
-            next.dy,
-          );
-          path.cubicTo(
-            controlPoint1.dx,
-            controlPoint1.dy,
-            controlPoint2.dx,
-            controlPoint2.dy,
+          path.quadraticBezierTo(
+            controlPoint.dx,
+            controlPoint.dy,
             next.dx,
             next.dy,
           );
@@ -387,7 +381,16 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
 
         // Close the path to complete the shape
         final lastOffset = dataSetOffset.entriesOffset.last;
-        path.lineTo(lastOffset.dx, lastOffset.dy);
+        final firstControlPoint = Offset(
+          (lastOffset.dx + firstOffset.dx) / 2,
+          (lastOffset.dy + firstOffset.dy) / 2,
+        );
+        path.quadraticBezierTo(
+          firstControlPoint.dx,
+          firstControlPoint.dy,
+          firstOffset.dx,
+          firstOffset.dy,
+        );
         path.close();
       }
 
