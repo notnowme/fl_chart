@@ -141,7 +141,8 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
 
     _borderPaint
       ..color = data.radarBorderData.color
-      ..strokeWidth = data.radarBorderData.width;
+      ..strokeWidth = data.radarBorderData.width
+      ..storkeCap = StrokeCap.round;
 
     if (data.radarShape == RadarShape.circle) {
       /// draw radar background
@@ -175,7 +176,8 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
 
     _tickPaint
       ..color = data.tickBorderData.color
-      ..strokeWidth = data.tickBorderData.width;
+      ..strokeWidth = data.tickBorderData.width
+      ..strokeCap = StrokeCap.round;
 
     /// draw radar ticks
     ticks.sublist(0, ticks.length - 1).asMap().forEach(
