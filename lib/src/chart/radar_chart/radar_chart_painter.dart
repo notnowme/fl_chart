@@ -359,30 +359,36 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
         graph.entryRadius,
         _graphPointPaint,
       );
-      for (int i = 1; i < dataSetOffset.entriesOffset.length; i++) {
-        final pointOffset = dataSetOffset.entriesOffset[i];
-        final nextOffset = dataSetOffset.entriesOffset[(i + 1) % dataSetOffset.entriesOffset.length];
+      
+      for (int i = 0; i < dataSetOffset.entriesOffset.length; i++) {
+      final pointOffset = dataSetOffset.entriesOffset[i];
+      final nextOffset = dataSetOffset.entriesOffset[(i + 1) % dataSetOffset.entriesOffset.length];
 
+      // 두 개의 제어점을 설정하여 부드러운 곡선을 생성
+      final controlPoint1 = Offset(
+        pointOffset.dx + (nextOffset.dx - pointOffset.dx) * 0.25,
+        pointOffset.dy + (nextOffset.dy - pointOffset.dy) * 0.25,
+      );
+      final controlPoint2 = Offset(
+        pointOffset.dx + (nextOffset.dx - pointOffset.dx) * 0.75,
+        pointOffset.dy + (nextOffset.dy - pointOffset.dy) * 0.75,
+      );
 
-        // 제어점을 이전 점과 현재 점의 중간 지점으로 설정하고 높이를 약간 조정
-        final controlPoint = Offset(
-          (nextOffset.dx + pointOffset.dx) / 2,
-          (nextOffset.dy + pointOffset.dy) / 2,
-        );
+      path.cubicTo(
+        controlPoint1.dx,
+        controlPoint1.dy,
+        controlPoint2.dx,
+        controlPoint2.dy,
+        nextOffset.dx,
+        nextOffset.dy,
+      );
 
-        path.quadraticBezierTo(
-          controlPoint.dx,
-          controlPoint.dy,
-          pointOffset.dx,
-          pointOffset.dy,
-        );
-
-        canvasWrapper.drawCircle(
-          pointOffset,
-          graph.entryRadius,
-          _graphPointPaint,
-        );
-      }
+      canvasWrapper.drawCircle(
+        nextOffset,
+        graph.entryRadius,
+        _graphPointPaint,
+      );
+    }
 
       path.close();
       canvasWrapper
