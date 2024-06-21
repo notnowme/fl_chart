@@ -347,6 +347,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
         ..style = PaintingStyle.fill;
 
       final path = Path();
+      final capPaint = Paint()..color = _graphBorderPaint.color;
 
       final firstOffset = Offset(
         dataSetOffset.entriesOffset.first.dx,
@@ -376,6 +377,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
       canvasWrapper
         ..drawPath(path, _graphPaint)
         ..drawPath(path, _graphBorderPaint);
+      canvas.drawCircle(Offset(firstOffset.dx * 0.75, firstOffset.dy * / 2), 1.0, capPaint);
     });
   }
 
