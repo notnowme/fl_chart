@@ -364,7 +364,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
         if (index == 0) return;
 
         // path.lineTo(pointOffset.dx, pointOffset.dy);
-        path.quadraticBezierTo(pointOffset.dx * 0.75, pointOffset.dy / 2, pointOffset.dx, pointOffset.dy);
+        path.quadraticBezierTo(pointOffset.dx * 0.5, pointOffset.dy - 100, pointOffset.dx, pointOffset.dy);
 
         canvasWrapper.drawCircle(
           pointOffset,
