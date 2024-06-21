@@ -376,7 +376,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
       path.close();
       canvasWrapper
         ..drawPath(path, _graphPaint)
-        ..drawPath(path, _graphBorderPaint)
+        ..drawPath(path, _graphBorderPaint);
     });
   }
 
