@@ -372,12 +372,12 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
           _graphPointPaint,
         );
       });
-
+      Offset capPath = Offset(firstOffset.dx * 0.75, firstOffset.dy * / 2);
       path.close();
       canvasWrapper
         ..drawPath(path, _graphPaint)
-        ..drawPath(path, _graphBorderPaint);
-      canvas.drawCircle(Offset(firstOffset.dx * 0.75, firstOffset.dy * / 2), 1.0, capPaint);
+        ..drawPath(path, _graphBorderPaint)
+        ..drawCircle(capPath, 1, capPaint);
     });
   }
 
