@@ -372,6 +372,12 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
       });
 
       path.close();
+      // Use addPolygon to create a rounded polygon path
+    final pathWithRoundedCorners = Path();
+    pathWithRoundedCorners.addPolygon(
+      dataSetOffset.entriesOffset,
+      true, // close the path
+    );
       canvasWrapper
         ..drawPath(path, _graphPaint)
         ..drawPath(path, _graphBorderPaint);
