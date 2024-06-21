@@ -337,7 +337,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
         ..style = PaintingStyle.fill;
 
       _graphBorderPaint
-        ..color = graph.borderColor
+        ..color = Colors.red
         ..style = PaintingStyle.stroke
         ..strokeWidth = graph.borderWidth
         ..strokeCap = StrokeCap.butt;
