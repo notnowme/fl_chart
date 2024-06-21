@@ -362,25 +362,16 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
       
       for (int i = 0; i < dataSetOffset.entriesOffset.length; i++) {
       final pointOffset = dataSetOffset.entriesOffset[i];
-      final nextOffset = dataSetOffset.entriesOffset[(i + 1) % dataSetOffset.entriesOffset.length];
+      final nextOffset = (i + 1) % dataSetOffset.entriesOffset.length;
 
-      // 두 개의 제어점을 설정하여 부드러운 곡선을 생성
-      final controlPoint1 = Offset(
-        pointOffset.dx + (nextOffset.dx - pointOffset.dx) * 0.3,
-        pointOffset.dy + (nextOffset.dy - pointOffset.dy) * 0.3,
-      );
-      final controlPoint2 = Offset(
-        pointOffset.dx + (nextOffset.dx - pointOffset.dx) * 0.7,
-        pointOffset.dy + (nextOffset.dy - pointOffset.dy) * 0.7,
-      );
+      final midPoint = Offset((pointOffset.dx + dataSetOffset.entriesOffset[nextOffset].dx) / 2,  (pointOffset.dy + dataSetOffset.entriesOffset[nextOffset].dy) / 2));
+      final controlPoint = Offset( midPoint.dx + (dataSetOffset.entriesOffset[nextOffset].dx - pointOffset.dx) * 0.2, midPoint.dy + (dataSetOffset.entriesOffset[nextOffset].dy - pointOffset.dy) * 0.2 );
 
       path.cubicTo(
-        controlPoint1.dx,
-        controlPoint1.dy,
-        controlPoint2.dx,
-        controlPoint2.dy,
-        nextOffset.dx,
-        nextOffset.dy,
+        controlPoint.dx,
+        controlPoint.dy,
+        dataSetOffset.entriesOffset[nextOffset].dx,
+        dataSetOffset.entriesOffset[nextOffset].dy,
       );
 
       canvasWrapper.drawCircle(
