@@ -379,7 +379,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
         graph.entryRadius,
         _graphPointPaint,
       );
-    }
+    }}
 
       path.close();
       canvasWrapper
