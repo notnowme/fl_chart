@@ -324,65 +324,80 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
 
   @visibleForTesting
   void drawDataSets(
-    CanvasWrapper canvasWrapper,
-    PaintHolder<RadarChartData> holder,
-  ) {
-    final data = holder.data;
-    // we will use dataSetsPosition to draw the graphs
-    dataSetsPosition ??= calculateDataSetsPosition(canvasWrapper.size, holder);
-    dataSetsPosition!.asMap().forEach((index, dataSetOffset) {
-      final graph = data.dataSets[index];
-      _graphPaint
-        ..color = graph.fillColor
-        ..style = PaintingStyle.fill;
+  CanvasWrapper canvasWrapper,
+  PaintHolder<RadarChartData> holder,
+) {
+  final data = holder.data;
+  // we will use dataSetsPosition to draw the graphs
+  dataSetsPosition ??= calculateDataSetsPosition(canvasWrapper.size, holder);
+  dataSetsPosition!.asMap().forEach((index, dataSetOffset) {
+    final graph = data.dataSets[index];
+    
+    // Set up paints for filling, border, and points
+    _graphPaint
+      ..color = graph.fillColor
+      ..style = PaintingStyle.fill;
 
-      _graphBorderPaint
-        ..color = graph.borderColor
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = graph.borderWidth;
+    _graphBorderPaint
+      ..color = graph.borderColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = graph.borderWidth;
 
-      _graphPointPaint
-        ..color = _graphBorderPaint.color
-        ..style = PaintingStyle.fill;
+    _graphPointPaint
+      ..color = _graphBorderPaint.color
+      ..style = PaintingStyle.fill;
 
-      final path = Path();
+    final path = Path();
 
-      final firstOffset = Offset(
-        dataSetOffset.entriesOffset.first.dx,
-        dataSetOffset.entriesOffset.first.dy,
+    // Calculate first point offset
+    final firstOffset = Offset(
+      dataSetOffset.entriesOffset.first.dx,
+      dataSetOffset.entriesOffset.first.dy,
+    );
+
+    path.moveTo(firstOffset.dx, firstOffset.dy);
+
+    canvasWrapper.drawCircle(
+      firstOffset,
+      graph.entryRadius,
+      _graphPointPaint,
+    );
+
+    dataSetOffset.entriesOffset.asMap().forEach((index, pointOffset) {
+      if (index == 0) return;
+
+      // Calculate previous and next points
+      final previousPoint = dataSetOffset.entriesOffset[index - 1];
+      final nextPoint = pointOffset;
+
+      // Calculate the control points for the arc
+      final controlPoint1 = Offset(
+        previousPoint.dx + (nextPoint.dx - previousPoint.dx) / 2,
+        previousPoint.dy + (nextPoint.dy - previousPoint.dy) / 2,
+      );
+      final controlPoint2 = nextPoint;
+
+      // Add arc to path
+      path.lineTo(controlPoint1.dx, controlPoint1.dy);
+      path.arcToPoint(
+        controlPoint2,
+        radius: Radius.circular(10), // Adjust the radius as needed
       );
 
-      path.moveTo(firstOffset.dx, firstOffset.dy);
-
       canvasWrapper.drawCircle(
-        firstOffset,
+        pointOffset,
         graph.entryRadius,
         _graphPointPaint,
       );
-      dataSetOffset.entriesOffset.asMap().forEach((index, pointOffset) {
-        if (index == 0) return;
-
-        path.lineTo(pointOffset.dx, pointOffset.dy);
-
-        canvasWrapper.drawCircle(
-          pointOffset,
-          graph.entryRadius,
-          _graphPointPaint,
-        );
-      });
-
-      path.close();
-      // Use addPolygon to create a rounded polygon path
-    final pathWithRoundedCorners = Path();
-    pathWithRoundedCorners.addPolygon(
-      dataSetOffset.entriesOffset,
-      true, // close the path
-    );
-      canvasWrapper
-        ..drawPath(path, _graphPaint)
-        ..drawPath(path, _graphBorderPaint);
     });
-  }
+
+    path.close();
+
+    canvasWrapper
+      ..drawPath(path, _graphPaint)
+      ..drawPath(path, _graphBorderPaint);
+  });
+}
 
   RadarTouchedSpot? handleTouch(
     Offset touchedPoint,
