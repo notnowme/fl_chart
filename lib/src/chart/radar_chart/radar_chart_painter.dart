@@ -372,7 +372,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
           _graphPointPaint,
         );
       });
-      Offset capPath = Offset(firstOffset.dx * 0.75, firstOffset.dy * / 2);
+      Offset capPath = Offset(firstOffset.dx * 0.75, firstOffset.dy / 2);
       path.close();
       canvasWrapper
         ..drawPath(path, _graphPaint)
