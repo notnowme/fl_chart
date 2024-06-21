@@ -363,7 +363,8 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
       dataSetOffset.entriesOffset.asMap().forEach((index, pointOffset) {
         if (index == 0) return;
 
-        path.lineTo(pointOffset.dx, pointOffset.dy);
+        // path.lineTo(pointOffset.dx, pointOffset.dy);
+        path.arcToPoint(Offset(pointOffset.dx, pointOffset.dy), radius: Radius.circular(50));
 
         canvasWrapper.drawCircle(
           pointOffset,
