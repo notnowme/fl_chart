@@ -360,14 +360,14 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
         _graphPointPaint,
       );
       for (int i = 1; i < dataSetOffset.entriesOffset.length; i++) {
-        final previousOffset = dataSetOffset.entriesOffset[i - 1];
         final pointOffset = dataSetOffset.entriesOffset[i];
+        final nextOffset = dataSetOffset.entriesOffset[(i + 1) % dataSetOffset.entriesOffset.length];
 
 
         // 제어점을 이전 점과 현재 점의 중간 지점으로 설정하고 높이를 약간 조정
         final controlPoint = Offset(
-          (previousOffset.dx + pointOffset.dx) / 2,
-          (previousOffset.dy + pointOffset.dy) / 2,
+          (nextOffset.dx + pointOffset.dx) / 2,
+          (nextOffset.dy + pointOffset.dy) / 2,
         );
 
         path.quadraticBezierTo(
