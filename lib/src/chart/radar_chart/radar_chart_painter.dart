@@ -366,12 +366,12 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
 
       // 두 개의 제어점을 설정하여 부드러운 곡선을 생성
       final controlPoint1 = Offset(
-        pointOffset.dx + (nextOffset.dx - pointOffset.dx) * 0.25,
-        pointOffset.dy + (nextOffset.dy - pointOffset.dy) * 0.25,
+        pointOffset.dx + (nextOffset.dx - pointOffset.dx) * 0.3,
+        pointOffset.dy + (nextOffset.dy - pointOffset.dy) * 0.3,
       );
       final controlPoint2 = Offset(
-        pointOffset.dx + (nextOffset.dx - pointOffset.dx) * 0.75,
-        pointOffset.dy + (nextOffset.dy - pointOffset.dy) * 0.75,
+        pointOffset.dx + (nextOffset.dx - pointOffset.dx) * 0.7,
+        pointOffset.dy + (nextOffset.dy - pointOffset.dy) * 0.7,
       );
 
       path.cubicTo(
