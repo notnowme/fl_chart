@@ -378,7 +378,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
       final controlPoint2 = nextPoint;
 
       // Add arc to path
-      path.lineTo(pointOffset.dx, pointOffset.dy);
+      path.lineTo(controlPoint1.dx, controlPoint1.dy);
       path.arcToPoint(
         controlPoint2,
         radius: Radius.circular(5), // Adjust the radius as needed
