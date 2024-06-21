@@ -359,18 +359,29 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
         graph.entryRadius,
         _graphPointPaint,
       );
-      dataSetOffset.entriesOffset.asMap().forEach((index, pointOffset) {
-        if (index == 0) return;
+      for (int i = 1; i < dataSetOffset.entriesOffset.length; i++) {
+        final previousOffset = dataSetOffset.entriesOffset[i - 1];
+        final pointOffset = dataSetOffset.entriesOffset[i];
 
-        // path.lineTo(pointOffset.dx, pointOffset.dy);
-        path.quadraticBezierTo(pointOffset.dx * 0.5, pointOffset.dy - 100, pointOffset.dx, pointOffset.dy);
+        // 제어점을 이전 점과 현재 점의 중간 지점으로 설정하고 높이를 약간 조정
+        final controlPoint = Offset(
+          (previousOffset.dx + pointOffset.dx) / 2,
+          (previousOffset.dy + pointOffset.dy) / 2 - 20,
+        );
+
+        path.quadraticBezierTo(
+          controlPoint.dx,
+          controlPoint.dy,
+          pointOffset.dx,
+          pointOffset.dy,
+        );
 
         canvasWrapper.drawCircle(
           pointOffset,
           graph.entryRadius,
           _graphPointPaint,
         );
-      });
+      }
 
       path.close();
       canvasWrapper
