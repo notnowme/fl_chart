@@ -370,8 +370,8 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
         );
 
         path.quadraticBezierTo(
-          controlPoint.dx,
-          controlPoint.dy,
+          pointOffset.dx / 2,
+          pointOffset.dy / 2 - 20,
           pointOffset.dx,
           pointOffset.dy,
         );
