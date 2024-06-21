@@ -141,8 +141,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
 
     _borderPaint
       ..color = data.radarBorderData.color
-      ..strokeWidth = data.radarBorderData.width
-      ..strokeCap = StrokeCap.round;
+      ..strokeWidth = data.radarBorderData.width;
 
     if (data.radarShape == RadarShape.circle) {
       /// draw radar background
@@ -176,8 +175,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
 
     _tickPaint
       ..color = data.tickBorderData.color
-      ..strokeWidth = data.tickBorderData.width
-      ..strokeCap = StrokeCap.round;
+      ..strokeWidth = data.tickBorderData.width;
 
     /// draw radar ticks
     ticks.sublist(0, ticks.length - 1).asMap().forEach(
@@ -342,7 +340,7 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
         ..color = graph.borderColor
         ..style = PaintingStyle.stroke
         ..strokeWidth = graph.borderWidth
-        ..strokeCap = StrokeCap.round; // make border rounded
+        ..strokeCap = StrokeCap.butt;
 
       _graphPointPaint
         ..color = _graphBorderPaint.color
@@ -362,38 +360,19 @@ class RadarChartPainter extends BaseChartPainter<RadarChartData> {
         graph.entryRadius,
         _graphPointPaint,
       );
+      dataSetOffset.entriesOffset.asMap().forEach((index, pointOffset) {
+        if (index == 0) return;
 
-      if (dataSetOffset.entriesOffset.length > 1) {
-        for (int i = 0; i < dataSetOffset.entriesOffset.length - 1; i++) {
-          final current = dataSetOffset.entriesOffset[i];
-          final next = dataSetOffset.entriesOffset[i + 1];
-          final controlPoint = Offset(
-            (current.dx + next.dx) / 2,
-            (current.dy + next.dy) / 2,
-          );
-          path.quadraticBezierTo(
-            controlPoint.dx,
-            controlPoint.dy,
-            next.dx,
-            next.dy,
-          );
-        }
+        path.lineTo(pointOffset.dx, pointOffset.dy);
 
-        // Close the path to complete the shape
-        final lastOffset = dataSetOffset.entriesOffset.last;
-        final firstControlPoint = Offset(
-          (lastOffset.dx + firstOffset.dx) / 2,
-          (lastOffset.dy + firstOffset.dy) / 2,
+        canvasWrapper.drawCircle(
+          pointOffset,
+          graph.entryRadius,
+          _graphPointPaint,
         );
-        path.quadraticBezierTo(
-          firstControlPoint.dx,
-          firstControlPoint.dy,
-          firstOffset.dx,
-          firstOffset.dy,
-        );
-        path.close();
-      }
+      });
 
+      path.close();
       canvasWrapper
         ..drawPath(path, _graphPaint)
         ..drawPath(path, _graphBorderPaint);
