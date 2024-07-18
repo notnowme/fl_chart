@@ -100,8 +100,8 @@ class LineChartPainter extends AxisChartPainter<LineChartData> {
         continue;
       }
 
-      drawBarLine(canvasWrapper, barData, holder);
       drawDots(canvasWrapper, barData, holder);
+      drawBarLine(canvasWrapper, barData, holder);
 
       if (data.extraLinesData.extraLinesOnTop) {
         super.drawExtraLines(context, canvasWrapper, holder);
