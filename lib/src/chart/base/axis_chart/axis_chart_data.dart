@@ -13,7 +13,7 @@ import 'package:flutter/material.dart' hide Image;
 /// we use them to determine how much is the scale of chart,
 /// and calculate x and y according to the scale.
 /// each child have to set it in their constructor.
-abstract class AxisChartData extends BaseChartData with EquatableMixin {
+abstract class AxisChartData extends BaseChartData with EquatableMixin {O
   AxisChartData({
     FlGridData? gridData,
     required this.titlesData,
@@ -1384,7 +1384,7 @@ class FlDotCirclePainter extends FlDotPainter {
   void draw(Canvas canvas, FlSpot spot, Offset offsetInCanvas) {
     if (strokeWidth != 0.0 && strokeColor.opacity != 0.0) {
       canvas.drawCircle(
-        Offset(offsetInCanvas + 2, offsetInCanvas + 2),
+        Offset(offsetInCanvas.dx + 2, offsetInCanvas.dy + 2),
         radius + (strokeWidth / 2),
         Paint()
           ..color = strokeColor
