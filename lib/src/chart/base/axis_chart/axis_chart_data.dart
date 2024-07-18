@@ -1393,7 +1393,7 @@ class FlDotCirclePainter extends FlDotPainter {
       );
       canvas.drawCircle(
         offsetInCanvas,
-        2.0,
+        radius + 2.0,
         Paint()
           ..color = Colors.white
           ..strokeWidth = strokeWidth
