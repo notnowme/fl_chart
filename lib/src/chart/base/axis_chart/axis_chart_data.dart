@@ -1384,7 +1384,7 @@ class FlDotCirclePainter extends FlDotPainter {
   void draw(Canvas canvas, FlSpot spot, Offset offsetInCanvas) {
     if (strokeWidth != 0.0 && strokeColor.opacity != 0.0) {
       canvas.drawCircle(
-        offsetInCanvas,
+        Offset(offsetInCanvas + 2, offsetInCanvas + 2),
         radius + (strokeWidth / 2),
         Paint()
           ..color = strokeColor
