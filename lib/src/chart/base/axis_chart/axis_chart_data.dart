@@ -1384,6 +1384,9 @@ class FlDotCirclePainter extends FlDotPainter {
   /// draw gap
   double gap;
 
+  /// gap color
+  Color gapColor;
+
   /// Implementation of the parent class to draw the circle
   @override
   void draw(Canvas canvas, FlSpot spot, Offset offsetInCanvas) {
