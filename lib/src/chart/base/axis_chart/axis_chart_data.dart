@@ -1366,7 +1366,7 @@ class FlDotCirclePainter extends FlDotPainter {
     this.strokeColor = const Color.fromRGBO(76, 175, 80, 1),
     this.strokeWidth = 0.0,
     this.gap = 0.0,
-    this.gapColor = const Colors.white,
+    this.gapColor = Colors.white,
   }) : radius = radius ?? 4.0;
 
   /// The fill color to use for the circle
